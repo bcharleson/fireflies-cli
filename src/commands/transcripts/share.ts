@@ -23,7 +23,19 @@ export const transcriptsShareCommand: CommandDefinition = {
   ],
   inputSchema: z.object({
     id: z.string().min(1),
-    emails: z.string().min(1),
+    emails: z
+      .string()
+      .min(1)
+      .refine(
+        (emails) => {
+          const parsed = emails.split(',').map((email) => email.trim());
+          return (
+            parsed.length <= 100 &&
+            parsed.every((email) => z.string().email().safeParse(email).success)
+          );
+        },
+        'Provide 1-100 comma-separated valid email addresses',
+      ),
     expiry_days: z.coerce.number().int().positive().optional(),
   }),
   cliMappings: {
@@ -40,7 +52,7 @@ export const transcriptsShareCommand: CommandDefinition = {
   handler: async (input, client) => {
     const emails = input.emails.split(',').map((e: string) => e.trim());
     const inputArg: Record<string, unknown> = { meeting_id: input.id, emails };
-    if (input.expiry_days) inputArg['expiry_days'] = input.expiry_days;
+    if (input.expiry_days !== undefined) inputArg['expiry_days'] = input.expiry_days;
 
     const data = await client.mutate<{ shareMeeting: unknown }>(SHARE_MUTATION, {
       input: inputArg,

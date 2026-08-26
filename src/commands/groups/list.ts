@@ -6,7 +6,13 @@ const GROUPS_QUERY = `
     user_groups {
       id
       name
-      members
+      handle
+      members {
+        user_id
+        first_name
+        last_name
+        email
+      }
     }
   }
 `;

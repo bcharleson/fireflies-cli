@@ -2,11 +2,17 @@ import { z } from 'zod';
 import type { CommandDefinition } from '../../core/types.js';
 
 const APPS_QUERY = `
-  query Apps($app_id: String, $transcript_id: String, $skip: Int, $limit: Int) {
+  query Apps($app_id: String, $transcript_id: String, $skip: Float, $limit: Float) {
     apps(app_id: $app_id, transcript_id: $transcript_id, skip: $skip, limit: $limit) {
-      app_id
-      transcript_id
-      output
+      outputs {
+        app_id
+        transcript_id
+        user_id
+        created_at
+        title
+        prompt
+        response
+      }
     }
   }
 `;
@@ -48,7 +54,7 @@ export const appsListCommand: CommandDefinition = {
     if (input.limit !== undefined) variables['limit'] = input.limit;
     if (input.skip !== undefined) variables['skip'] = input.skip;
 
-    const data = await client.query<{ apps: unknown[] }>(APPS_QUERY, variables);
-    return data.apps;
+    const data = await client.query<{ apps: { outputs: unknown[] } }>(APPS_QUERY, variables);
+    return data.apps.outputs;
   },
 };

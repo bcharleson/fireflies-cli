@@ -2,12 +2,16 @@ import { z } from 'zod';
 import type { CommandDefinition } from '../../core/types.js';
 
 const CHANNEL_QUERY = `
-  query Channel($id: String!) {
+  query Channel($id: ID!) {
     channel(id: $id) {
       id
-      name
-      privacy
-      members
+      title
+      is_private
+      members {
+        user_id
+        email
+        name
+      }
     }
   }
 `;

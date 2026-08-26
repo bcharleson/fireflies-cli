@@ -20,7 +20,7 @@ export const usersSetRoleCommand: CommandDefinition = {
   description: 'Assign a role to a team user (admin only)',
   examples: [
     'fireflies users set-role --user-id usr123 --role admin',
-    'fireflies users set-role --user-id usr123 --role member',
+    'fireflies users set-role --user-id usr123 --role user',
   ],
   inputSchema: z.object({
     user_id: z.string().min(1),
