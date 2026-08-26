@@ -2,10 +2,11 @@ import { z } from 'zod';
 import type { CommandDefinition } from '../../core/types.js';
 
 const SHARE_MUTATION = `
-  mutation ShareMeeting($id: String!, $emails: [String!]!, $expiry: DateTime) {
-    shareMeeting(id: $id, emails: $emails, expiry: $expiry) {
+  mutation ShareMeeting($input: ShareMeetingInput!) {
+    shareMeeting(input: $input) {
       success
       message
+      share_slug
     }
   }
 `;
@@ -18,12 +19,12 @@ export const transcriptsShareCommand: CommandDefinition = {
     'Share a transcript with a list of email addresses (up to 100). Rate limited to 10 requests/hour.',
   examples: [
     'fireflies transcripts share abc123 --emails alice@co.com,bob@co.com',
-    'fireflies transcripts share abc123 --emails alice@co.com --expiry 2026-06-01',
+    'fireflies transcripts share abc123 --emails alice@co.com --expiry-days 30',
   ],
   inputSchema: z.object({
     id: z.string().min(1),
     emails: z.string().min(1),
-    expiry: z.string().optional(),
+    expiry_days: z.coerce.number().int().positive().optional(),
   }),
   cliMappings: {
     args: [{ field: 'id', name: 'id', required: true, description: 'Transcript ID' }],
@@ -33,15 +34,17 @@ export const transcriptsShareCommand: CommandDefinition = {
         flags: '--emails <emails>',
         description: 'Comma-separated email addresses (max 100)',
       },
-      { field: 'expiry', flags: '--expiry <date>', description: 'Expiry date (ISO 8601)' },
+      { field: 'expiry_days', flags: '--expiry-days <n>', description: 'Expiry in days' },
     ],
   },
   handler: async (input, client) => {
     const emails = input.emails.split(',').map((e: string) => e.trim());
-    const variables: Record<string, unknown> = { id: input.id, emails };
-    if (input.expiry) variables['expiry'] = input.expiry;
+    const inputArg: Record<string, unknown> = { meeting_id: input.id, emails };
+    if (input.expiry_days) inputArg['expiry_days'] = input.expiry_days;
 
-    const data = await client.mutate<{ shareMeeting: unknown }>(SHARE_MUTATION, variables);
+    const data = await client.mutate<{ shareMeeting: unknown }>(SHARE_MUTATION, {
+      input: inputArg,
+    });
     return data.shareMeeting;
   },
 };

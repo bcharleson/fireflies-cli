@@ -2,10 +2,10 @@ import { z } from 'zod';
 import type { CommandDefinition } from '../../core/types.js';
 
 const UPDATE_TITLE_MUTATION = `
-  mutation UpdateMeetingTitle($id: String!, $title: String!) {
-    updateMeetingTitle(id: $id, title: $title) {
-      success
-      message
+  mutation UpdateMeetingTitle($input: UpdateMeetingTitleInput!) {
+    updateMeetingTitle(input: $input) {
+      id
+      title
     }
   }
 `;
@@ -29,8 +29,7 @@ export const transcriptsUpdateTitleCommand: CommandDefinition = {
   },
   handler: async (input, client) => {
     const data = await client.mutate<{ updateMeetingTitle: unknown }>(UPDATE_TITLE_MUTATION, {
-      id: input.id,
-      title: input.title,
+      input: { id: input.id, title: input.title },
     });
     return data.updateMeetingTitle;
   },

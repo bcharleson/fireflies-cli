@@ -4,8 +4,9 @@ import type { CommandDefinition } from '../../core/types.js';
 const CREATE_UPLOAD_URL_MUTATION = `
   mutation {
     createUploadUrl {
-      url
-      transcript_id
+      upload_url
+      meeting_id
+      expires_at
     }
   }
 `;
@@ -20,9 +21,9 @@ export const uploadCreateUrlCommand: CommandDefinition = {
   inputSchema: z.object({}),
   cliMappings: {},
   handler: async (_input, client) => {
-    const data = await client.mutate<{ createUploadUrl: { url: string; transcript_id: string } }>(
-      CREATE_UPLOAD_URL_MUTATION,
-    );
+    const data = await client.mutate<{
+      createUploadUrl: { upload_url: string; meeting_id: string; expires_at: string };
+    }>(CREATE_UPLOAD_URL_MUTATION);
     return data.createUploadUrl;
   },
 };

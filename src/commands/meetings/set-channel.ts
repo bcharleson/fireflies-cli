@@ -2,11 +2,8 @@ import { z } from 'zod';
 import type { CommandDefinition } from '../../core/types.js';
 
 const SET_CHANNEL_MUTATION = `
-  mutation UpdateMeetingChannel($transcript_ids: [String!]!, $channel_id: String!) {
-    updateMeetingChannel(transcript_ids: $transcript_ids, channel_id: $channel_id) {
-      success
-      message
-    }
+  mutation UpdateMeetingChannel($input: UpdateMeetingChannelInput!) {
+    updateMeetingChannel(input: $input)
   }
 `;
 
@@ -40,8 +37,7 @@ export const meetingsSetChannelCommand: CommandDefinition = {
     }
 
     const data = await client.mutate<{ updateMeetingChannel: unknown }>(SET_CHANNEL_MUTATION, {
-      transcript_ids: transcriptIds,
-      channel_id: input.channel,
+      input: { transcript_ids: transcriptIds, channel_id: input.channel },
     });
     return data.updateMeetingChannel;
   },
