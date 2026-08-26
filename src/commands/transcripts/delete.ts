@@ -4,8 +4,8 @@ import type { CommandDefinition } from '../../core/types.js';
 const DELETE_TRANSCRIPT_MUTATION = `
   mutation DeleteTranscript($id: String!) {
     deleteTranscript(id: $id) {
-      success
-      message
+      id
+      title
     }
   }
 `;

@@ -22,8 +22,10 @@ export function createClient(apiKey: string): FirefliesClient {
       throw new AuthError('Invalid API key. Run: fireflies login');
     }
     if (res.status === 429) {
-      const retryAfter = parseInt(res.headers.get('Retry-After') ?? '60', 10);
-      throw new RateLimitError(retryAfter);
+      const parsedRetryAfter = Number(res.headers.get('Retry-After'));
+      throw new RateLimitError(
+        Number.isFinite(parsedRetryAfter) && parsedRetryAfter > 0 ? parsedRetryAfter : undefined,
+      );
     }
     if (!res.ok) {
       throw new ServerError(`HTTP ${res.status}: ${res.statusText}`, res.status);
@@ -40,7 +42,11 @@ export function createClient(apiKey: string): FirefliesClient {
       throw new GraphQLError(json.errors);
     }
 
-    return json.data as T;
+    if (json.data == null) {
+      throw new GraphQLError([{ message: 'Fireflies API returned no data' }]);
+    }
+
+    return json.data;
   }
 
   return {

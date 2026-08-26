@@ -6,15 +6,12 @@ const ACTIVE_MEETINGS_QUERY = `
     active_meetings {
       id
       title
-      date
-      is_live
       meeting_link
-      host_email
-      participants
-      speakers {
-        id
-        name
-      }
+      organizer_email
+      start_time
+      end_time
+      privacy
+      state
     }
   }
 `;

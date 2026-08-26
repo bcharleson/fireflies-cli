@@ -2,10 +2,10 @@ import { z } from 'zod';
 import type { CommandDefinition } from '../../core/types.js';
 
 const UPDATE_TITLE_MUTATION = `
-  mutation UpdateMeetingTitle($id: String!, $title: String!) {
-    updateMeetingTitle(id: $id, title: $title) {
-      success
-      message
+  mutation UpdateMeetingTitle($input: UpdateMeetingTitleInput!) {
+    updateMeetingTitle(input: $input) {
+      id
+      title
     }
   }
 `;
@@ -15,10 +15,7 @@ export const transcriptsUpdateTitleCommand: CommandDefinition = {
   group: 'transcripts',
   subcommand: 'update-title',
   description: 'Rename a meeting transcript',
-  examples: [
-    'fireflies transcripts update-title abc123 "Q1 Strategy Review"',
-    'fireflies transcripts update-title abc123 --title "Q1 Strategy Review"',
-  ],
+  examples: ['fireflies transcripts update-title abc123 --title "Q1 Strategy Review"'],
   inputSchema: z.object({
     id: z.string().min(1),
     title: z.string().min(1),
@@ -29,8 +26,7 @@ export const transcriptsUpdateTitleCommand: CommandDefinition = {
   },
   handler: async (input, client) => {
     const data = await client.mutate<{ updateMeetingTitle: unknown }>(UPDATE_TITLE_MUTATION, {
-      id: input.id,
-      title: input.title,
+      input: { id: input.id, title: input.title },
     });
     return data.updateMeetingTitle;
   },

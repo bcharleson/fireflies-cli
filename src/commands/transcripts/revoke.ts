@@ -2,8 +2,8 @@ import { z } from 'zod';
 import type { CommandDefinition } from '../../core/types.js';
 
 const REVOKE_MUTATION = `
-  mutation RevokeSharedMeetingAccess($id: String!, $email: String!) {
-    revokeSharedMeetingAccess(id: $id, email: $email) {
+  mutation RevokeSharedMeetingAccess($input: RevokeSharedMeetingAccessInput!) {
+    revokeSharedMeetingAccess(input: $input) {
       success
       message
     }
@@ -32,8 +32,7 @@ export const transcriptsRevokeCommand: CommandDefinition = {
   },
   handler: async (input, client) => {
     const data = await client.mutate<{ revokeSharedMeetingAccess: unknown }>(REVOKE_MUTATION, {
-      id: input.id,
-      email: input.email,
+      input: { meeting_id: input.id, email: input.email },
     });
     return data.revokeSharedMeetingAccess;
   },

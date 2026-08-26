@@ -2,13 +2,19 @@ import { z } from 'zod';
 import type { CommandDefinition } from '../../core/types.js';
 
 const CONTINUE_ASKFRED_THREAD_MUTATION = `
-  mutation ContinueAskFredThread($thread_id: String!, $query: String!) {
-    continueAskFredThread(thread_id: $thread_id, query: $query) {
-      id
-      messages {
-        role
-        content
+  mutation ContinueAskFredThread($input: ContinueAskFredThreadInput!) {
+    continueAskFredThread(input: $input) {
+      message {
+        id
+        thread_id
+        query
+        answer
+        suggested_queries
+        status
+        created_at
+        updated_at
       }
+      cost
     }
   }
 `;
@@ -39,7 +45,7 @@ export const askfredReplyCommand: CommandDefinition = {
   handler: async (input, client) => {
     const data = await client.mutate<{ continueAskFredThread: unknown }>(
       CONTINUE_ASKFRED_THREAD_MUTATION,
-      { thread_id: input.id, query: input.query },
+      { input: { thread_id: input.id, query: input.query } },
     );
     return data.continueAskFredThread;
   },

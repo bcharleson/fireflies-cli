@@ -3,7 +3,7 @@ import type { CommandDefinition } from '../../core/types.js';
 
 const CREATE_BITE_MUTATION = `
   mutation CreateBite(
-    $transcript_id: String!
+    $transcript_id: ID!
     $start_time: Float!
     $end_time: Float!
     $name: String
@@ -11,7 +11,7 @@ const CREATE_BITE_MUTATION = `
     $summary: String
   ) {
     createBite(
-      transcript_id: $transcript_id
+      transcript_Id: $transcript_id
       start_time: $start_time
       end_time: $end_time
       name: $name

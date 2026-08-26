@@ -5,11 +5,19 @@ const ASKFRED_THREAD_QUERY = `
   query AskFredThread($id: String!) {
     askfred_thread(id: $id) {
       id
+      title
       transcript_id
+      user_id
       created_at
       messages {
-        role
-        content
+        id
+        thread_id
+        query
+        answer
+        suggested_queries
+        status
+        created_at
+        updated_at
       }
     }
   }

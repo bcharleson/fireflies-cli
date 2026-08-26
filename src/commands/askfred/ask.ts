@@ -2,14 +2,19 @@ import { z } from 'zod';
 import type { CommandDefinition } from '../../core/types.js';
 
 const CREATE_ASKFRED_THREAD_MUTATION = `
-  mutation CreateAskFredThread($transcript_id: String, $query: String!) {
-    createAskFredThread(transcript_id: $transcript_id, query: $query) {
-      id
-      transcript_id
-      messages {
-        role
-        content
+  mutation CreateAskFredThread($input: CreateAskFredThreadInput!) {
+    createAskFredThread(input: $input) {
+      message {
+        id
+        thread_id
+        query
+        answer
+        suggested_queries
+        status
+        created_at
+        updated_at
       }
+      cost
     }
   }
 `;
@@ -44,12 +49,12 @@ export const askfredAskCommand: CommandDefinition = {
     ],
   },
   handler: async (input, client) => {
-    const variables: Record<string, unknown> = { query: input.query };
-    if (input.transcript_id) variables['transcript_id'] = input.transcript_id;
+    const threadInput: Record<string, unknown> = { query: input.query };
+    if (input.transcript_id) threadInput['transcript_id'] = input.transcript_id;
 
     const data = await client.mutate<{ createAskFredThread: unknown }>(
       CREATE_ASKFRED_THREAD_MUTATION,
-      variables,
+      { input: threadInput },
     );
     return data.createAskFredThread;
   },

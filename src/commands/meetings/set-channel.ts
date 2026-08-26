@@ -2,10 +2,15 @@ import { z } from 'zod';
 import type { CommandDefinition } from '../../core/types.js';
 
 const SET_CHANNEL_MUTATION = `
-  mutation UpdateMeetingChannel($transcript_ids: [String!]!, $channel_id: String!) {
-    updateMeetingChannel(transcript_ids: $transcript_ids, channel_id: $channel_id) {
-      success
-      message
+  mutation UpdateMeetingChannel($input: UpdateMeetingChannelInput!) {
+    updateMeetingChannel(input: $input) {
+      id
+      title
+      channels {
+        id
+        title
+        is_private
+      }
     }
   }
 `;
@@ -20,7 +25,13 @@ export const meetingsSetChannelCommand: CommandDefinition = {
     'fireflies meetings set-channel --ids abc123,def456,ghi789 --channel ch456',
   ],
   inputSchema: z.object({
-    ids: z.string().min(1),
+    ids: z
+      .string()
+      .min(1)
+      .refine(
+        (ids) => ids.split(',').every((id) => id.trim().length > 0),
+        'Transcript IDs must be comma-separated non-empty values',
+      ),
     channel: z.string().min(1),
   }),
   cliMappings: {
@@ -40,8 +51,7 @@ export const meetingsSetChannelCommand: CommandDefinition = {
     }
 
     const data = await client.mutate<{ updateMeetingChannel: unknown }>(SET_CHANNEL_MUTATION, {
-      transcript_ids: transcriptIds,
-      channel_id: input.channel,
+      input: { transcript_ids: transcriptIds, channel_id: input.channel },
     });
     return data.updateMeetingChannel;
   },
