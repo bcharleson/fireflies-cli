@@ -2,7 +2,7 @@ import { z } from 'zod';
 import type { CommandDefinition } from '../../core/types.js';
 
 const BITE_QUERY = `
-  query Bite($id: String!) {
+  query Bite($id: ID!) {
     bite(id: $id) {
       id
       transcript_id

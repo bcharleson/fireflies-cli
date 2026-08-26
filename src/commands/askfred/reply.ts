@@ -4,7 +4,16 @@ import type { CommandDefinition } from '../../core/types.js';
 const CONTINUE_ASKFRED_THREAD_MUTATION = `
   mutation ContinueAskFredThread($input: ContinueAskFredThreadInput!) {
     continueAskFredThread(input: $input) {
-      message
+      message {
+        id
+        thread_id
+        query
+        answer
+        suggested_queries
+        status
+        created_at
+        updated_at
+      }
       cost
     }
   }

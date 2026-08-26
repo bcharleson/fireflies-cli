@@ -8,7 +8,7 @@ const ADD_TO_LIVE_MUTATION = `
     $meeting_password: String
     $duration: Int
     $language: String
-    $attendees: [AttendeeInput]
+    $attendees: [AttendeeInput!]
   ) {
     addToLiveMeeting(
       meeting_link: $meeting_link
@@ -39,7 +39,7 @@ export const meetingsAddBotCommand: CommandDefinition = {
     link: z.string().url(),
     title: z.string().optional(),
     password: z.string().optional(),
-    duration: z.coerce.number().min(15).max(120).optional(),
+    duration: z.coerce.number().int().min(15).max(120).optional(),
     language: z.string().optional(),
   }),
   cliMappings: {
@@ -63,7 +63,7 @@ export const meetingsAddBotCommand: CommandDefinition = {
     const variables: Record<string, unknown> = { meeting_link: input.link };
     if (input.title) variables['title'] = input.title;
     if (input.password) variables['meeting_password'] = input.password;
-    if (input.duration) variables['duration'] = input.duration;
+    if (input.duration !== undefined) variables['duration'] = input.duration;
     if (input.language) variables['language'] = input.language;
 
     const data = await client.mutate<{ addToLiveMeeting: unknown }>(

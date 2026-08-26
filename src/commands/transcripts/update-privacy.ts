@@ -18,10 +18,7 @@ export const transcriptsUpdatePrivacyCommand: CommandDefinition = {
   subcommand: 'update-privacy',
   description:
     'Set the access level for a transcript. Valid levels: link, owner, participants, participatingteammates, teammatesandparticipants, teammates',
-  examples: [
-    'fireflies transcripts update-privacy abc123 link',
-    'fireflies transcripts update-privacy abc123 --privacy participants',
-  ],
+  examples: ['fireflies transcripts update-privacy abc123 --privacy participants'],
   inputSchema: z.object({
     id: z.string().min(1),
     privacy: z.enum(PRIVACY_LEVELS),

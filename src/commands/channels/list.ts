@@ -5,9 +5,13 @@ const CHANNELS_QUERY = `
   query {
     channels {
       id
-      name
-      privacy
-      members
+      title
+      is_private
+      members {
+        user_id
+        email
+        name
+      }
     }
   }
 `;

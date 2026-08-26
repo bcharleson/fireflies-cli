@@ -3,7 +3,15 @@ import type { CommandDefinition } from '../../core/types.js';
 
 const SET_CHANNEL_MUTATION = `
   mutation UpdateMeetingChannel($input: UpdateMeetingChannelInput!) {
-    updateMeetingChannel(input: $input)
+    updateMeetingChannel(input: $input) {
+      id
+      title
+      channels {
+        id
+        title
+        is_private
+      }
+    }
   }
 `;
 
@@ -17,7 +25,13 @@ export const meetingsSetChannelCommand: CommandDefinition = {
     'fireflies meetings set-channel --ids abc123,def456,ghi789 --channel ch456',
   ],
   inputSchema: z.object({
-    ids: z.string().min(1),
+    ids: z
+      .string()
+      .min(1)
+      .refine(
+        (ids) => ids.split(',').every((id) => id.trim().length > 0),
+        'Transcript IDs must be comma-separated non-empty values',
+      ),
     channel: z.string().min(1),
   }),
   cliMappings: {

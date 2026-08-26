@@ -5,12 +5,10 @@ const ASKFRED_THREADS_QUERY = `
   query {
     askfred_threads {
       id
+      title
       transcript_id
+      user_id
       created_at
-      messages {
-        role
-        content
-      }
     }
   }
 `;

@@ -15,10 +15,7 @@ export const transcriptsUpdateTitleCommand: CommandDefinition = {
   group: 'transcripts',
   subcommand: 'update-title',
   description: 'Rename a meeting transcript',
-  examples: [
-    'fireflies transcripts update-title abc123 "Q1 Strategy Review"',
-    'fireflies transcripts update-title abc123 --title "Q1 Strategy Review"',
-  ],
+  examples: ['fireflies transcripts update-title abc123 --title "Q1 Strategy Review"'],
   inputSchema: z.object({
     id: z.string().min(1),
     title: z.string().min(1),

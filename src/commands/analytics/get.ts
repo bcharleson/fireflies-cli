@@ -2,22 +2,40 @@ import { z } from 'zod';
 import type { CommandDefinition } from '../../core/types.js';
 
 const ANALYTICS_QUERY = `
-  query Analytics($start_time: DateTime, $end_time: DateTime) {
+  query Analytics($start_time: String, $end_time: String) {
     analytics(start_time: $start_time, end_time: $end_time) {
-      team_meetings
-      team_hours
-      avg_duration
+      team {
+        meeting {
+          count
+          duration
+          average_count
+          average_duration
+        }
+        conversation {
+          average_filler_words
+          average_questions
+          average_words_per_minute
+          average_talk_listen_ratio
+          longest_monologue_duration_sec
+          total_filler_words
+          total_questions
+        }
+      }
       users {
         user_id
-        name
-        email
-        num_meetings
-        hours
-        words_per_minute
-        questions
-        filler_words
-        longest_monologue
-        talk_ratio
+        user_name
+        user_email
+        meeting {
+          count
+          duration
+        }
+        conversation {
+          user_words_per_minute
+          user_questions
+          user_filler_words
+          user_longest_monologue_sec
+          talk_listen_ratio
+        }
       }
     }
   }
