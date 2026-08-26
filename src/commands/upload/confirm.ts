@@ -2,10 +2,10 @@ import { z } from 'zod';
 import type { CommandDefinition } from '../../core/types.js';
 
 const CONFIRM_UPLOAD_MUTATION = `
-  mutation ConfirmUpload($session_id: String!) {
-    confirmUpload(session_id: $session_id) {
+  mutation ConfirmUpload($input: ConfirmUploadInput!) {
+    confirmUpload(input: $input) {
       success
-      title
+      meeting_id
       message
     }
   }
@@ -32,7 +32,7 @@ export const uploadConfirmCommand: CommandDefinition = {
   },
   handler: async (input, client) => {
     const data = await client.mutate<{ confirmUpload: unknown }>(CONFIRM_UPLOAD_MUTATION, {
-      session_id: input.session_id,
+      input: { meeting_id: input.session_id },
     });
     return data.confirmUpload;
   },

@@ -11,7 +11,7 @@ const CREATE_BITE_MUTATION = `
     $summary: String
   ) {
     createBite(
-      transcript_id: $transcript_id
+      transcript_Id: $transcript_id
       start_time: $start_time
       end_time: $end_time
       name: $name
